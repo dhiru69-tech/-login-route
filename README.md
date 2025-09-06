@@ -13,8 +13,7 @@
 ---
 
 ## 🚀 Live Demo  
-🎥 Preview (replace with your GIF or deploy link):  
-![Login Page Screenshot](assets/screenshot.png)  
+🎥 Click here to Preview : https://dhiru69-tech.github.io/-login-route/ 
 
 ---
 
