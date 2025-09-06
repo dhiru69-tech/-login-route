@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Auth Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0f0f1e;
+            overflow: hidden;
+            position: relative;
+            color: #fff;
+        }
+
+        /* Particle System */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(20px, 40px) rotate(90deg);
+            }
+            50% {
+                transform: translate(0, 80px) rotate(180deg);
+            }
+            75% {
+                transform: translate(-20px, 40px) rotate(270deg);
+            }
+        }
+
+        /* Neon Glow Elements */
+        .glow-element {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.3;
+            filter: blur(40px);
+            animation: pulse 8s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.2;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 0.2;
+                transform: scale(0.8);
+            }
+        }
+
+        /* Floating UI Elements */
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg) translate(50px) rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg) translate(50px) rotate(-360deg);
+            }
+        }
+
+        /* Ripple Animation */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            animation: rippleEffect 6s infinite linear;
+        }
+
+        @keyframes rippleEffect {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+            100% {
+                width: 500px;
+                height: 500px;
+                opacity: 0;
+            }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            width: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            z-index: 10;
+            background: rgba(15, 15, 30, 0.7);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+            padding: 30px;
+            transition: all 0.5s ease;
+        }
+
+        /* Neon Border */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            z-index: -1;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff, #00ffff);
+            background-size: 400%;
+            border-radius: 25px;
+            animation: neonFlow 10s linear infinite;
+        }
+
+        @keyframes neonFlow {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 400% 0;
+            }
+        }
+
+        .container::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            background: rgba(15, 15, 30, 0.9);
+            border-radius: 18px;
+            z-index: -1;
+        }
+
+        /* Form Styling */
+        .form-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .form-title {
+            color: #fff;
+            font-size: 28px;
+            margin-bottom: 30px;
+            position: relative;
+            text-align: center;
+        }
+
+        .typewriter {
+            overflow: hidden;
+            border-right: .15em solid #00ffff;
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #00ffff }
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 0;
+            font-size: 16px;
+            color: #fff;
+            border: none;
+            border-bottom: 2px solid #4a4a6e;
+            outline: none;
+            background: transparent;
+            transition: 0.3s;
+        }
+
+        .input-group label {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            font-size: 16px;
+            color: #aaa;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus ~ label,
+        .input-group input:valid ~ label {
+            top: -15px;
+            left: 0;
+            color: #00ffff;
+            font-size: 14px;
+        }
+
+        .input-group input:focus {
+            border-bottom: 2px solid #00ffff;
+            box-shadow: 0 5px 10px rgba(0, 255, 255, 0.2);
+        }
+
+        .underline {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            transition: width 0.5s ease;
+        }
+
+        .input-group input:focus ~ .underline {
+            width: 100%;
+        }
+
+        /* Button Styling */
+        .btn {
+            position: relative;
+            display: inline-block;
+            padding: 15px 30px;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-decoration: none;
+            font-size: 16px;
+            overflow: hidden;
+            transition: 0.2s;
+            background: rgba(0, 255, 255, 0.1);
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .btn:hover {
+            color: #0f0f1e;
+            background: #00ffff;
+            box-shadow: 0 0 10px #00ffff, 0 0 40px #00ffff, 0 0 80px #00ffff;
+            transition-delay: 0.1s;
+        }
+
+        .btn span {
+            position: absolute;
+            display: block;
+        }
+
+        /* Button Shine Effect */
+        .btn span:nth-child(1) {
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffff);
+        }
+
+        .btn:hover span:nth-child(1) {
+            left: 100%;
+            transition: 1s;
+        }
+
+        .btn span:nth-child(3) {
+            bottom: 0;
+            right: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(270deg, transparent, #00ffff);
+        }
+
+        .btn:hover span:nth-child(3) {
+            right: 100%;
+            transition: 1s;
+            transition-delay: 0.5s;
+        }
+
+        .btn span:nth-child(2) {
+            top: -100%;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, #00ffff);
+        }
+
+        .btn:hover span:nth-child(2) {
+            top: 100%;
+            transition: 1s;
+            transition-delay: 0.25s;
+        }
+
+        .btn span:nth-child(4) {
+            bottom: -100%;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(360deg, transparent, #00ffff);
+        }
+
+        .btn:hover span:nth-child(4) {
+            bottom: 100%;
+            transition: 1s;
+            transition-delay: 0.75s;
+        }
+
+        /* Social Icons */
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .icon {
+            margin: 0 15px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .icon:hover {
+            color: #00ffff;
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), transparent);
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .icon:hover::before {
+            transform: translateY(0);
+        }
+
+        /* Toggle between forms */
+        .toggle-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .toggle-text {
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+
+        .toggle-btn {
+            background: transparent;
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        .toggle-btn:hover {
+            color: #0f0f1e;
+        }
+
+        .toggle-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: #00ffff;
+            z-index: -1;
+            transition: 0.5s;
+        }
+
+        .toggle-btn:hover::before {
+            width: 100%;
+        }
+
+        /* Page styling */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .container {
+                width: 90%;
+                padding: 20px;
+            }
+            
+            .social-icons {
+                flex-wrap: wrap;
+            }
+            
+            .icon {
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="particles" id="particles"></div>
+    <div class="glow-elements" id="glow-elements"></div>
+    <div class="shapes" id="shapes"></div>
+    <div class="ripples" id="ripples"></div>
+
+    <!-- Login Page -->
+    <div class="container">
+        <div class="page active" id="login-page">
+            <div class="form-container">
+                <h1 class="form-title"><span class="typewriter">Welcome Back</span></h1>
+                
+                <div class="input-group">
+                    <input type="text" required>
+                    <label>Username or Email</label>
+                    <div class="underline"></div>
+                </div>
+                
+                <div class="input-group">
+                    <input type="password" required>
+                    <label>Password</label>
+                    <div class="underline"></div>
+                </div>
+                
+                <a href="#" style="color: #00ffff; text-align: right; margin-top: -20px; margin-bottom: 20px; text-decoration: none; display: block;">Forgot password?</a>
+                
+                <button class="btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    Sign In
+                </button>
+                
+                <div class="social-icons">
+                    <div class="icon">
+                        <i class="fab fa-google"></i>
+                    </div>
+                    <div class="icon">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                    <div class="icon">
+                        <i class="fab fa-twitter"></i>
+                    </div>
+                    <div class="icon">
+                        <i class="fab fa-linkedin-in"></i>
+                    </div>
+                </div>
+
+                <div class="toggle-container">
+                    <p class="toggle-text">Don't have an account?</p>
+                    <button class="toggle-btn" id="go-to-signup">Sign Up</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signup Page -->
+        <div class="page" id="signup-page">
+            <div class="form-container">
+                <h1 class="form-title"><span class="typewriter">Create Account</span></h1>
+                
+                <div class="input-group">
+                    <input type="text" required>
+                    <label>Username</label>
+                    <div class="underline"></div>
+                </div>
+                
+                <div class="input-group">
+                    <input type="email" required>
+                    <label>Email</label>
+                    <div class="underline"></div>
+                </div>
+                
+                <div class="input-group">
+                    <input type="password" required>
+                    <label>Password</label>
+                    <div class="underline"></div>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" required>
+                    <label>Confirm Password</label>
+                    <div class="underline"></div>
+                </div>
+                
+                <button class="btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    Sign Up
+                </button>
+                
+                <div class="social-icons">
+                    <div class="icon">
+                        <i class="fab fa-google"></i>
+                    </div>
+                    <div class="icon">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                    <div class="icon">
+                        <i class="fab fa-twitter"></i>
+                    </div>
+                    <div class="icon">
+                        <i class="fab fa-linkedin-in"></i>
+                    </div>
+                </div>
+
+                <div class="toggle-container">
+                    <p class="toggle-text">Already have an account?</p>
+                    <button class="toggle-btn" id="go-to-login">Sign In</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loginPage = document.getElementById('login-page');
+        const signupPage = document.getElementById('signup-page');
+        const goToSignupBtn = document.getElementById('go-to-signup');
+        const goToLoginBtn = document.getElementById('go-to-login');
+        
+        // Toggle between pages
+        goToSignupBtn.addEventListener('click', () => {
+            loginPage.classList.remove('active');
+            signupPage.classList.add('active');
+            document.querySelector('#login-page .typewriter').style.animation = 'none';
+            document.querySelector('#signup-page .typewriter').style.animation = 'none';
+            setTimeout(() => {
+                document.querySelector('#signup-page .typewriter').style.animation = 'typing 3.5s steps(40, end), blink-caret .75s step-end infinite';
+            }, 50);
+        });
+        
+        goToLoginBtn.addEventListener('click', () => {
+            signupPage.classList.remove('active');
+            loginPage.classList.add('active');
+            document.querySelector('#signup-page .typewriter').style.animation = 'none';
+            document.querySelector('#login-page .typewriter').style.animation = 'none';
+            setTimeout(() => {
+                document.querySelector('#login-page .typewriter').style.animation = 'typing 3.5s steps(40, end), blink-caret .75s step-end infinite';
+            }, 50);
+        });
+        
+        // Create particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            // Random properties
+            const size = Math.random() * 10 + 2;
+            const posX = Math.random() * window.innerWidth;
+            const posY = Math.random() * window.innerHeight;
+            const delay = Math.random() * 15;
+            const hue = Math.random() * 360;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${posX}px`;
+            particle.style.top = `${posY}px`;
+            particle.style.animationDelay = `${delay}s`;
+            particle.style.backgroundColor = `hsl(${hue}, 100%, 70%)`;
+            
+            particlesContainer.appendChild(particle);
+        }
+        
+        // Create glow elements
+        const glowContainer = document.getElementById('glow-elements');
+        for (let i = 0; i < 5; i++) {
+            const glow = document.createElement('div');
+            glow.classList.add('glow-element');
+            
+            const size = Math.random() * 300 + 100;
+            const posX = Math.random() * window.innerWidth;
+            const posY = Math.random() * window.innerHeight;
+            const hue = Math.random() * 360;
+            
+            glow.style.width = `${size}px`;
+            glow.style.height = `${size}px`;
+            glow.style.left = `${posX}px`;
+            glow.style.top = `${posY}px`;
+            glow.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+            
+            glowContainer.appendChild(glow);
+        }
+        
+        // Create floating shapes
+        const shapesContainer = document.getElementById('shapes');
+        const shapes = ['circle', 'triangle', 'square', 'pentagon'];
+        for (let i = 0; i < 10; i++) {
+            const shape = document.createElement('div');
+            shape.classList.add('shape');
+            
+            const size = Math.random() * 80 + 20;
+            const posX = Math.random() * window.innerWidth;
+            const posY = Math.random() * window.innerHeight;
+            const type = shapes[Math.floor(Math.random() * shapes.length)];
+            const hue = Math.random() * 360;
+            const duration = Math.random() * 40 + 20;
+            
+            shape.style.width = `${size}px`;
+            shape.style.height = `${size}px`;
+            shape.style.left = `${posX}px`;
+            shape.style.top = `${posY}px`;
+            shape.style.animationDuration = `${duration}s`;
+            shape.style.borderColor = `hsl(${hue}, 100%, 70%)`;
+            
+            if (type === 'circle') {
+                shape.style.borderRadius = '50%';
+                shape.style.border = `2px solid hsl(${hue}, 100%, 70%)`;
+            } else if (type === 'triangle') {
+                shape.style.width = '0';
+                shape.style.height = '0';
+                shape.style.borderLeft = `${size/2}px solid transparent`;
+                shape.style.borderRight = `${size/2}px solid transparent`;
+                shape.style.borderBottom = `${size}px solid hsl(${hue}, 100%, 70%)`;
+                shape.style.backgroundColor = 'transparent';
+            } else if (type === 'square') {
+                shape.style.border = `2px solid hsl(${hue}, 100%, 70%)`;
+            } else {
+                shape.style.clipPath = 'polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)';
+                shape.style.backgroundColor = `hsl(${hue}, 100%, 70%)`;
+            }
+            
+            shapesContainer.appendChild(shape);
+        }
+        
+        // Create ripple effects
+        const ripplesContainer = document.getElementById('ripples');
+        function createRipple() {
+            const ripple = document.createElement('div');
+            ripple.classList.add('ripple');
+            
+            const posX = Math.random() * window.innerWidth;
+            const posY = Math.random() * window.innerHeight;
+            const hue = Math.random() * 360;
+            
+            ripple.style.left = `${posX}px`;
+            ripple.style.top = `${posY}px`;
+            ripple.style.borderColor = `hsl(${hue}, 100%, 70%)`;
+            
+            ripplesContainer.appendChild(ripple);
+            
+            // Remove after animation completes
+            setTimeout(() => {
+                ripple.remove();
+            }, 6000);
+        }
+        
+        // Create initial ripples
+        for (let i = 0; i < 3; i++) {
+            setTimeout(createRipple, i * 2000);
+        }
+        
+        // Continue creating ripples
+        setInterval(createRipple, 3000);
+        
+        // Input focus effects
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', () => {
+                if (input.value === '') {
+                    input.parentElement.classList.remove('focused');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
