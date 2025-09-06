@@ -35,3 +35,19 @@
 ├── style.css        # Styling (neon effects, animations, responsiveness)
 ├── script.js        # Interactive behavior (optional)
 └── assets/          # Screenshots, images, icons
+---
+## ⚙️ Installation & Setup  
+
+Follow these steps to run the project locally 👇  
+
+```bash
+# 1️⃣ Clone this repository
+https://github.com/dhiru69-tech/-login-route.git
+
+# 2️⃣ Navigate into the project folder
+cd -login-route
+
+# 3️⃣ Open the project
+# Option A:  Just Download index.html  Open directly in your browser
+# Option B: Use Live Server (VS Code Extension) for auto reload
+
